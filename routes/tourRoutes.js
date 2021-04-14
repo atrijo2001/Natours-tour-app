@@ -1,5 +1,5 @@
 const express = require('express');
-const {checkBody, getAllTours, getTour, createTour, updateTour, deleteTour} = require('./../controllers/tourController');
+const {getAllTours, getTour, createTour, updateTour, deleteTour} = require('./../controllers/tourController');
 
 const router = express.Router();
 
@@ -8,12 +8,12 @@ const router = express.Router();
 router
   .route('/')
   .get(getAllTours)
-  .post(checkBody, createTour);
+  .post(createTour);
 
 router
   .route('/:id')
   .get(getTour)
-  .patch(updateTour)
+  .put(updateTour)
   .delete(deleteTour);
 
 module.exports = router;
