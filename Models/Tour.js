@@ -1,4 +1,5 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const toursSchema = new mongoose.Schema({
     name: {
@@ -7,6 +8,7 @@ const toursSchema = new mongoose.Schema({
         unique: [true, 'Name should be unique'],
         trim: true
     },
+    slug: String,
     duration: {
         type: Number,
         required: [true, 'A tour requires a duration']
@@ -52,7 +54,31 @@ const toursSchema = new mongoose.Schema({
         type: Date,
         default: Date.now()
     },
-    startDates: [Date]
+    startDates: [Date],
+    secretTour: {
+        type: Boolean,
+        default: false
+    }
+    
+}, {
+    toJSON: {virtuals: true},
+    toObject: {virtuals: true}
+})
+
+toursSchema.virtual('durationWeeks').get(function(){
+    return this.duration / 7;
+});
+
+//Document middleware that runs before save and create command
+toursSchema.pre('save', function(next){
+   this.slug = slugify(this.name, {lower: true});
+   next();
+})
+
+//Query Middleware
+toursSchema.pre('find', function(next){
+
+    next();
 })
 
 module.exports = mongoose.model('Tour', toursSchema)
